@@ -12,6 +12,16 @@ import os
 import sys
 import logging
 
+# Testing a fix for the networkx error
+
+# from networkx import NetworkXError
+# from networkx import empty_graph
+# from networkx import MultiDiGraph
+# from networkx import DiGraph
+# from networkx import read_edgelist
+# from networkx import set_edge_attributes
+# from networkx import get_edge_attributes
+
 import cProfile
 
 
@@ -86,6 +96,7 @@ def directed_configuration_model(_in_deg, _out_deg, seed=0):
     """
     if not sum(_in_deg) == sum(_out_deg):
         raise nx.NetworkXError('Invalid degree sequences. Sequences must have equal sums.')
+        # raise ValueError('Invalid degree sequences. Sequences must have equal sums.')
 
     random.seed(seed)
     n_in = len(_in_deg)
@@ -97,6 +108,7 @@ def directed_configuration_model(_in_deg, _out_deg, seed=0):
 
     num_nodes = len(_in_deg)
     _g = nx.empty_graph(num_nodes, nx.MultiDiGraph())
+    # _g = empty_graph(num_nodes, MultiDiGraph())
     if num_nodes == 0 or max(_in_deg) == 0:
         return _g  # No edges exist
 
@@ -178,6 +190,7 @@ class TransactionGenerator:
         :param sim_name: Simulation name (overrides the content in the `conf_json`)
         """
         self.g = nx.DiGraph()  # Transaction graph object
+        # self.g = DiGraph()  # Transaction graph object
         self.num_accounts = 0  # Number of total accounts
         self.hubs = set()  # Hub account vertices (main account candidates of AML typology subgraphs)
         self.attr_names = list()  # Additional account attribute names
@@ -507,6 +520,7 @@ class TransactionGenerator:
         in_deg, out_deg = get_degrees(deg_file, self.num_accounts)
         G = directed_configuration_model(in_deg, out_deg, self.seed)
         G = nx.DiGraph(G)
+        # G = DiGraph(G)
         self.g = G
 
         logger.info("Add %d base transactions" % self.g.number_of_edges())
@@ -570,6 +584,7 @@ class TransactionGenerator:
         """
         if len(members) != topology.number_of_nodes():
             raise nx.NetworkXError("The number of account vertices does not match")
+            # raise ValueError("The number of account vertices does not match")
 
         node_map = dict(zip(members, topology.nodes()))
         for e in topology.edges():
@@ -585,15 +600,19 @@ class TransactionGenerator:
         :return:
         """
         topology = nx.DiGraph()
+        # topology = DiGraph()
         topology = nx.read_edgelist(csv_name, delimiter=",", create_using=topology)
+        # topology = read_edgelist(csv_name, delimiter=",", create_using=topology)
         self.add_subgraph(members, topology)
 
 
     def mark_active_edges(self):
         nx.set_edge_attributes(self.g, 'active', False)
+        # set_edge_attributes(self.g, 'active', False)
         for normal_model in self.normal_models:
             subgraph = self.g.subgraph(normal_model.node_ids)
             nx.set_edge_attributes(subgraph, 'active', True)
+            # set_edge_attributes(subgraph, 'active', True)
 
 
     def load_normal_models(self):
@@ -923,6 +942,8 @@ class TransactionGenerator:
         model_id = self.alert_types[typology_name]  # alert model ID
         sub_g = nx.DiGraph(model_id=model_id, reason=typology_name, scheduleID=schedule,
                            start=start_date, end=end_date)  # Transaction subgraph for a typology
+        # sub_g = DiGraph(model_id=model_id, reason=typology_name, scheduleID=schedule,
+        #                    start=start_date, end=end_date)  # Transaction subgraph for a typology
 
 
         if typology_name == "fan_in":  # fan_in pattern (multiple accounts --> single (main) account)
@@ -1238,6 +1259,7 @@ class TransactionGenerator:
     def write_alert_account_list(self):
         def get_out_edge_attrs(g, vid, name):
             return [v for k, v in nx.get_edge_attributes(g, name).items() if (k[0] == vid or k[1] == vid)]
+            # return [v for k, v in get_edge_attributes(g, name).items() if (k[0] == vid or k[1] == vid)]
 
         acct_count = 0
         alert_member_file = os.path.join(self.output_dir, self.out_alert_member_file)
