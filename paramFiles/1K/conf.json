@@ -41,6 +41,7 @@
     "accounts": "accounts.csv",
     "alert_patterns": "alertPatterns.csv",
     "degree": "degree.csv",
+    "normal_models": "normalModels.csv",
     "transaction_type": "transactionType.csv",
     "is_aggregated_accounts": true
   },
