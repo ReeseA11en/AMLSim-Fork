@@ -524,10 +524,14 @@ class TransactionGenerator:
         self.g = G
 
         logger.info("Add %d base transactions" % self.g.number_of_edges())
-        nodes = self.g.nodes()
-        for src_i, dst_i in self.g.edges():
+        nodes = list(self.g.nodes()) # Cahnged to list to fix array adressing
+        for src_i, dst_i in list(self.g.edges()): # Changed to list to fix array addressing
+            # print(self.g.edges)
+            # print(nodes[dst_i])
             src = nodes[src_i]
             dst = nodes[dst_i]
+            # print(type(self.g.edges()))
+            # print(dst)
             self.add_edge_info(src, dst)  # Add edge info.
 
     def add_account(self, acct_id, **attr):
@@ -572,7 +576,9 @@ class TransactionGenerator:
         self.check_account_exist(bene)
         if orig == bene:
             raise ValueError("Self loop from/to %s is not allowed for transaction networks" % str(orig))
-        self.g.edge[orig][bene]['edge_id'] = self.edge_id
+        print(self.g.edges[0,19])
+        # self.g.edges[orig][bene]['edge_id'] = self.edge_id # Changed 'edge' to 'edges' to reflect g's features
+        self.g.edges[orig,bene] = self.edge_id 
         self.edge_id += 1
 
     # Load Custom Topology Files
