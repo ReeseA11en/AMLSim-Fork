@@ -609,106 +609,110 @@ class LogConverter:
         us_gen = self.fake['en_US']
 
         for row in reader:
-            output_row = list(self.schema.acct_defaults)
 
-            acct_type = ""
-            acct_id = ""
+            if row == []:
+                pass
+            else:
+                output_row = list(self.schema.acct_defaults)
 
-            gender = np.random.choice(['Male', 'Female'], p=[0.5, 0.5])
+                acct_type = ""
+                acct_id = ""
 
-            good_address = False
-            while good_address == False:
-                address = us_gen.address()
-                split1 = address.split('\n')
-                street_address = split1[0]
-                split2 = split1[1].split(', ')
-                if len(split2) == 2:
-                    good_address = True
+                gender = np.random.choice(['Male', 'Female'], p=[0.5, 0.5])
+
+                good_address = False
+                while good_address == False:
+                    address = us_gen.address()
+                    split1 = address.split('\n')
+                    street_address = split1[0]
+                    split2 = split1[1].split(', ')
+                    if len(split2) == 2:
+                        good_address = True
             
-            city = split2[0] 
-            split3 = split2[1].split(' ')
-            state = split3[0]
-            postcode = split3[1]
+                city = split2[0] 
+                split3 = split2[1].split(' ')
+                state = split3[0]
+                postcode = split3[1]
             
 
-            for output_index, output_item in enumerate(self.schema.data['account']):
-                if 'dataType' in output_item:
-                    output_type = output_item['dataType']
-                    input_type = lookup.inputType(output_type)
+                for output_index, output_item in enumerate(self.schema.data['account']):
+                    if 'dataType' in output_item:
+                        output_type = output_item['dataType']
+                        input_type = lookup.inputType(output_type)
 
-                    try:
-                        input_index = header.index(input_type)
-                    except ValueError:
-                        continue
-
-                    if output_type == "start_time":
                         try:
-                            start = int(row[input_index])
-                            if start >= 0:
-                                output_row[output_index] = start
-                        except ValueError:  # If failed, keep the default value
-                            pass
+                            input_index = header.index(input_type)
+                        except ValueError:
+                            continue
 
-                    elif output_type == "end_time":
-                        try:
-                            end = int(row[input_index])
-                            if end > 0:
-                                output_row[output_index] = end
-                        except ValueError:  # If failed, keep the default value
-                            pass
+                        if output_type == "start_time":
+                            try:
+                                start = int(row[input_index])
+                                if start >= 0:
+                                    output_row[output_index] = start
+                            except ValueError:  # If failed, keep the default value
+                                pass
 
-                    elif output_type == "account_id":
-                        acct_id = row[input_index]
-                        output_row[output_index] = acct_id
+                        elif output_type == "end_time":
+                            try:
+                                end = int(row[input_index])
+                                if end > 0:
+                                    output_row[output_index] = end
+                            except ValueError:  # If failed, keep the default value
+                                pass
 
-                    elif output_type == "account_type":
-                        acct_type = row[input_index]
-                        output_row[output_index] = acct_type
+                        elif output_type == "account_id":
+                            acct_id = row[input_index]
+                            output_row[output_index] = acct_id
+
+                        elif output_type == "account_type":
+                            acct_type = row[input_index]
+                            output_row[output_index] = acct_type
         
-                    else:
-                        output_row[output_index] = row[input_index]
+                        else:
+                            output_row[output_index] = row[input_index]
 
-                if 'valueType' in output_item:
-                    if output_item['valueType'] == 'date':
-                        output_row[output_index] = self.schema.days2date(output_row[output_index])
+                    if 'valueType' in output_item:
+                        if output_item['valueType'] == 'date':
+                            output_row[output_index] = self.schema.days2date(output_row[output_index])
 
                 
-                if 'name' in output_item:
-                    if output_item['name'] == 'first_name':
-                        output_row[output_index] = us_gen.first_name_male() if gender == "Male" else us_gen.first_name_female()
+                    if 'name' in output_item:
+                        if output_item['name'] == 'first_name':
+                            output_row[output_index] = us_gen.first_name_male() if gender == "Male" else us_gen.first_name_female()
                     
-                    elif output_item['name'] == 'last_name':
-                        output_row[output_index] = us_gen.last_name_male() if gender == "Male" else us_gen.last_name_female()
+                        elif output_item['name'] == 'last_name':
+                            output_row[output_index] = us_gen.last_name_male() if gender == "Male" else us_gen.last_name_female()
 
-                    elif output_item['name'] == 'street_addr':
-                        output_row[output_index] = street_address
+                        elif output_item['name'] == 'street_addr':
+                            output_row[output_index] = street_address
 
-                    elif output_item['name'] == 'city':
-                        output_row[output_index] = city
+                        elif output_item['name'] == 'city':
+                            output_row[output_index] = city
 
-                    elif output_item['name'] == 'state':
-                        output_row[output_index] = state
+                        elif output_item['name'] == 'state':
+                            output_row[output_index] = state
 
-                    elif output_item['name'] == 'country':
-                        output_row[output_index] = "US"
+                        elif output_item['name'] == 'country':
+                            output_row[output_index] = "US"
 
-                    elif output_item['name'] == 'zip':
-                        output_row[output_index] = postcode
+                        elif output_item['name'] == 'zip':
+                            output_row[output_index] = postcode
 
-                    elif output_item['name'] == 'gender':
-                        output_row[output_index] = gender
+                        elif output_item['name'] == 'gender':
+                            output_row[output_index] = gender
 
-                    elif output_item['name'] == 'birth_date':
-                        output_row[output_index] = us_gen.date_of_birth()
+                        elif output_item['name'] == 'birth_date':
+                            output_row[output_index] = us_gen.date_of_birth()
 
-                    elif output_item['name'] == 'ssn':
-                        output_row[output_index] = us_gen.ssn()
+                        elif output_item['name'] == 'ssn':
+                            output_row[output_index] = us_gen.ssn()
 
-                    elif output_item['name'] == 'lat':
-                        output_row[output_index] = us_gen.latitude()
+                        elif output_item['name'] == 'lat':
+                            output_row[output_index] = us_gen.latitude()
                     
-                    elif output_item['name'] == 'lon':
-                        output_row[output_index] = us_gen.longitude()
+                        elif output_item['name'] == 'lon':
+                            output_row[output_index] = us_gen.longitude()
 
            
 
@@ -851,22 +855,26 @@ class LogConverter:
         writer.writerow(header)
 
         for row in reader:
-            reason = row[indices["reason"]]
-            alert_id = int(row[indices["alertID"]])
-            account_id = int(row[indices["accountID"]])
-            is_sar = row[indices["isSAR"]].lower() == "true"
-            model_id = row[indices["modelID"]]
-            schedule_id = row[indices["scheduleID"]]
-            bank_id = row[indices["bankID"]]
+            if row == []:
+                pass
+            else:
+                # print(row) # Added to test
+                reason = row[indices["reason"]]
+                alert_id = int(row[indices["alertID"]])
+                account_id = int(row[indices["accountID"]])
+                is_sar = row[indices["isSAR"]].lower() == "true"
+                model_id = row[indices["modelID"]]
+                schedule_id = row[indices["scheduleID"]]
+                bank_id = row[indices["bankID"]]
 
-            if alert_id not in self.reports:
-                self.reports[alert_id] = AMLTypology(reason)
-            self.reports[alert_id].add_member(account_id, is_sar)
+                if alert_id not in self.reports:
+                    self.reports[alert_id] = AMLTypology(reason)
+                self.reports[alert_id].add_member(account_id, is_sar)
 
-            attr = {name: row[index] for name, index in indices.items()}
-            output_row = self.schema.get_alert_acct_row(alert_id, reason, account_id, account_id, is_sar,
+                attr = {name: row[index] for name, index in indices.items()}
+                output_row = self.schema.get_alert_acct_row(alert_id, reason, account_id, account_id, is_sar,
                                                         model_id, schedule_id, bank_id, **attr)
-            writer.writerow(output_row)
+                writer.writerow(output_row)
 
 
     def output_sar_cases(self):

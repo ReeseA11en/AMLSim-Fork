@@ -226,6 +226,7 @@ public class AMLSim extends SimState {
 		Map<String, Integer> columnIndex = getColumnIndices(line);
 
 		while((line = reader.readLine()) != null){
+			if (line.length() < 4) {} else {
 			String[] elements = line.split(",");
             String accountID = elements[columnIndex.get("ACCOUNT_ID")];
 			boolean isSAR = elements[columnIndex.get("IS_SAR")].toLowerCase().equals("true");
@@ -248,6 +249,7 @@ public class AMLSim extends SimState {
 			this.idMap.put(accountID, index);
 			this.schedule.scheduleRepeating(account);
 		}
+		}
 		int numAccounts = idMap.size();
 		logger.info("Number of total accounts: " + numAccounts);
 		diameter = new Diameter(numAccounts);
@@ -260,6 +262,7 @@ public class AMLSim extends SimState {
 		String line = reader.readLine();
 		Map<String, Integer> columnIndex = getColumnIndices(line);
 		while((line = reader.readLine()) != null){
+			if (line.length() < 4) {} else {
 			String[] elements = line.split(",");
             String srcID = elements[columnIndex.get("src")];
             String dstID = elements[columnIndex.get("dst")];
@@ -271,6 +274,7 @@ public class AMLSim extends SimState {
 			src.addBeneAcct(dst);
 			src.addTxType(dst, ttype);
 		}
+		}
 		reader.close();
 	}
 
@@ -281,6 +285,7 @@ public class AMLSim extends SimState {
 			Map<String, Integer> columnIndexMap = getColumnIndices(line);
 
 			while((line = reader.readLine()) != null) {
+				if (line.length() < 4) {} else {
 				String[] elements = line.split(",");
 
 				String type = elements[columnIndexMap.get("type")];
@@ -321,7 +326,7 @@ public class AMLSim extends SimState {
 
 				accountGroup.setModel(model);
 
-				model.setParameters(this.normalTxInterval, -1, -1);
+				model.setParameters(this.normalTxInterval, -1, -1);}
 			}
 		}
 	}
@@ -335,6 +340,7 @@ public class AMLSim extends SimState {
 		Map<String, Integer> columnIndex = getColumnIndices(line);
 		Map<Long, Integer> scheduleModels = new HashMap<>();
 		while((line = reader.readLine()) != null){
+			if (line.length() < 4) {} else {
 			String[] elements = line.split(",");
 			long alertID = Long.parseLong(elements[columnIndex.get("alertID")]);
             String accountID = elements[columnIndex.get("accountID")];
@@ -375,6 +381,7 @@ public class AMLSim extends SimState {
 			}
 			account.setSAR(isSAR);
 			scheduleModels.put(alertID, scheduleID);
+		}
 		}
 		for(long alertID : scheduleModels.keySet()){
 			int modelID = scheduleModels.get(alertID);
