@@ -840,10 +840,6 @@ class LogConverter:
         output_file = self.alert_acct_file
 
         print("Load alert groups: %s" % input_file)
-        # print(self.input_dir)
-        # print(input_file)
-        # print(self.work_dir)
-        # print(output_file)
         rf = open(os.path.join(self.input_dir, input_file), "r")
         wf = open(os.path.join(self.work_dir, output_file), "w")
         reader = csv.reader(rf)
