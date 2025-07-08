@@ -716,23 +716,23 @@ class LogConverter:
 
            
 
-            acct_writer.writerow(output_row)
-            self.org_types[int(acct_id)] = acct_type
+                acct_writer.writerow(output_row)
+                self.org_types[int(acct_id)] = acct_type
 
-            # Write a party row per account
-            is_individual = random() >= 0.5  # 50%: individual, 50%: organization
-            party_id = str(acct_id)
-            if is_individual:  # Individual
-                output_row = self.schema.get_party_ind_row(party_id)
-                ind_writer.writerow(output_row)
-            else:
-                output_row = self.schema.get_party_org_row(party_id)
-                org_writer.writerow(output_row)
+                # Write a party row per account
+                is_individual = random() >= 0.5  # 50%: individual, 50%: organization
+                party_id = str(acct_id)
+                if is_individual:  # Individual
+                    output_row = self.schema.get_party_ind_row(party_id)
+                    ind_writer.writerow(output_row)
+                else:
+                    output_row = self.schema.get_party_org_row(party_id)
+                    org_writer.writerow(output_row)
 
-            # Write account-party mapping row
-            output_row = self.schema.get_acct_party_row(mapping_id, acct_id, party_id)
-            map_writer.writerow(output_row)
-            mapping_id += 1
+                # Write account-party mapping row
+                output_row = self.schema.get_acct_party_row(mapping_id, acct_id, party_id)
+                map_writer.writerow(output_row)
+                mapping_id += 1
 
         in_acct_f.close()
         out_ind_f.close()
