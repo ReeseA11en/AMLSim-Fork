@@ -190,7 +190,6 @@ class TransactionGenerator:
         :param sim_name: Simulation name (overrides the content in the `conf_json`)
         """
         self.g = nx.DiGraph()  # Transaction graph object
-        # self.g = DiGraph()  # Transaction graph object
         self.num_accounts = 0  # Number of total accounts
         self.hubs = set()  # Hub account vertices (main account candidates of AML typology subgraphs)
         self.attr_names = list()  # Additional account attribute names

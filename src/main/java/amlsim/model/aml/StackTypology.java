@@ -46,6 +46,8 @@ public class StackTypology extends AMLTypology {
         int orig_members = total_members / 3;  // First 1/3 accounts are originator accounts
         int mid_members = orig_members;  // Second 1/3 accounts are intermediate accounts
         int bene_members = total_members - orig_members * 2;  // Rest of accounts are beneficiary accounts
+        long alertID = alert.getAlertID();
+        boolean isSAR = alert.isSAR();
 
 
         for(int i=0; i<orig_members; i++){  // originator accounts --> Intermediate accounts
@@ -60,7 +62,7 @@ public class StackTypology extends AMLTypology {
 
             for (int j = orig_members; j < (orig_members + mid_members); j++) {
                 Account bene = alert.getMembers().get(j);
-                makeTransaction(step, transactionAmount.doubleValue(), orig, bene);
+                makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID);
             }
         }
 
@@ -75,7 +77,7 @@ public class StackTypology extends AMLTypology {
 
             for (int j = (orig_members + mid_members); j < total_members; j++) {
                 Account bene = alert.getMembers().get(j);
-                makeTransaction(step, transactionAmount.doubleValue(), orig, bene);
+                makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID);
             }
         }
     }

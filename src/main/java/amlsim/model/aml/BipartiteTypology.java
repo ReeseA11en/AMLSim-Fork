@@ -35,6 +35,8 @@ public class BipartiteTypology extends AMLTypology {
     @Override
     public void sendTransactions(long step, Account acct) {
         List<Account> members = alert.getMembers();  // All members
+        long alertID = alert.getAlertID();
+        boolean isSAR = alert.isSAR();
 
         int last_orig_index = members.size() / 2;  // The first half accounts are originators
         for (int i = 0; i < last_orig_index; i++) {
@@ -48,7 +50,7 @@ public class BipartiteTypology extends AMLTypology {
 
             for (int j = last_orig_index; j < members.size(); j++) {
                 Account bene = members.get(j); // The latter half accounts are beneficiaries
-                makeTransaction(step, transactionAmount.doubleValue(), orig, bene);
+                makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID);
             }
         }
     }
