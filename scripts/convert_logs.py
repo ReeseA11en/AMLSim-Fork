@@ -854,7 +854,6 @@ class LogConverter:
             if row == []:
                 pass
             else:
-                # print(row) # Added to test
                 reason = row[indices["reason"]]
                 alert_id = int(row[indices["alertID"]])
                 account_id = int(row[indices["accountID"]])
