@@ -14,8 +14,10 @@ import numpy as np
 
 
 def days_to_date(days):
+    # date = datetime.datetime(2017, 1, 1) + datetime.timedelta(days=days)
     date = datetime.datetime(2017, 1, 1) + datetime.timedelta(days=days)
-    return date.strftime("%Y%m%d")
+    # return date.strftime("%Y%m%d")
+    return date.strftime("%m/%d/%Y")
 
 
 def get_simulator_name(csv_file):
@@ -382,7 +384,9 @@ class Schema:
         except ValueError:
             return ""
         dt = self._base_date + datetime.timedelta(num_days)
-        return dt.isoformat() + "Z"  # UTC
+        # return dt.isoformat() + "Z"  # UTC
+        # return dt
+        return dt.strftime("%m/%d/%Y")
 
 
     def get_tx_row(self, _tx_id, _timestamp, _amount, _tx_type, _orig, _dest, _is_sar, _alert_id, **attr):
@@ -775,6 +779,7 @@ class LogConverter:
             try:
                 days = int(row[step_idx])
                 date_str = str(days)  # days_to_date(days)
+                # date_str = str(days_to_date(days))  # days_to_date(days)
                 amount = row[amt_idx]  # transaction amount
                 orig_id = row[orig_idx]  # originator ID
                 dest_id = row[dest_idx]  # beneficiary ID
