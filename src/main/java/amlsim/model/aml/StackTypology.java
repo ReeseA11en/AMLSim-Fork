@@ -49,37 +49,51 @@ public class StackTypology extends AMLTypology {
         long alertID = alert.getAlertID();
         boolean isSAR = alert.isSAR();
 
+        double randomNumber = Math.random();
 
-        for(int i=0; i<orig_members; i++){  // originator accounts --> Intermediate accounts
-            Account orig = alert.getMembers().get(i);
-            if(!orig.getID().equals(acct.getID())){
-                continue;
-            }
+        if (randomNumber < 0.4) { // Giving a 40% chance for transactions
 
-            int numBene = (orig_members + mid_members) - orig_members;
-            TargetedTransactionAmount transactionAmount = getTransactionAmount(numBene, orig.getBalance());
+        double randomNum = Math.random(); // Randomly determining the number of transactions to occur 
+        int transactions = 0; // Setting a placeholder for the number of transactions
 
+        if (randomNum < 0.6) {transactions = 1;} else if (randomNum < 0.9) {transactions = 2;} else {transactions = 3;} // Determining the number of transactions
 
-            for (int j = orig_members; j < (orig_members + mid_members); j++) {
-                Account bene = alert.getMembers().get(j);
-                makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID);
-            }
-        }
+        for (int i = 0; i < transactions; i++) {
+            int random_orig = random.nextInt(orig_members-1); // Choosing a random node from the orig pool
+            int random_bene = random.nextInt(mid_members-1) + orig_members; //Choosing a random node from the mid pool
 
-        for(int i=orig_members; i<(orig_members+mid_members); i++){   // Intermediate accounts --> Beneficiary accounts
-            Account orig = alert.getMembers().get(i);
-            if(!orig.getID().equals(acct.getID())){
-                continue;
-            }
+            // Accessing the node information
+            Account orig = alert.getMembers().get(random_orig);
+            Account bene = alert.getMembers().get(random_bene);
 
-            int numBene = total_members - (orig_members + mid_members);
-            TargetedTransactionAmount transactionAmount = getTransactionAmount(numBene, orig.getBalance());
+            TargetedTransactionAmount transactionAmount = getTransactionAmount(1, orig.getBalance()); // Finding the transaction amount
 
-            for (int j = (orig_members + mid_members); j < total_members; j++) {
-                Account bene = alert.getMembers().get(j);
-                makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID);
-            }
-        }
+            makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID); // Completing the transaction
+
+        }} else {}
+
+        double randomNumber2 = Math.random(); // Generating a random value to determine number of transactions
+
+        if (randomNumber2 < 0.4) { // Giving a 40% chance for transactions
+
+        double randomNum = Math.random(); // Randomly determining the number of transactions to occur 
+        int transactions = 0; // Setting a placeholder for the number of transactions
+
+        if (randomNum < 0.6) {transactions = 1;} else if (randomNum < 0.9) {transactions = 2;} else {transactions = 3;} // Determining the number of transactions
+
+        for (int i = 0; i < transactions; i++) {
+            int random_orig = random.nextInt(mid_members-1) + orig_members; // Choosing a random node from the mid pool
+            int random_bene = random.nextInt(bene_members-1) + orig_members + mid_members; // Choosing a random node from the bene pool
+            
+            // Accessing the node information
+            Account orig = alert.getMembers().get(random_orig);
+            Account bene = alert.getMembers().get(random_bene);
+
+            TargetedTransactionAmount transactionAmount = getTransactionAmount(1, orig.getBalance()); // Finding the transaction amount
+
+            makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID); // Completing the transaction
+
+        }} else {}
     }
 
 

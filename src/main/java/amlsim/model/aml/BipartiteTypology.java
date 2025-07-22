@@ -35,43 +35,32 @@ public class BipartiteTypology extends AMLTypology {
     @Override
     public void sendTransactions(long step, Account acct) {
         List<Account> members = alert.getMembers();  // All members
-        long alertID = alert.getAlertID();
-        boolean isSAR = alert.isSAR();
+        long alertID = alert.getAlertID(); // Alert ID
+        boolean isSAR = alert.isSAR(); // Checking for the SAR flag
         
         double randomNumber = Math.random();
         
-        if (randomNumber > 0.5) { // Giving a 50/50 chance to see if any transactions are made this step
+        if (randomNumber < 0.4) { // Giving a 40% chance to see if any transactions are made this step
+
         int last_orig_index = members.size() / 2;  // The first half accounts are originators
+        double randomNumber2 = Math.random(); // Randomly determining the number of transactions to occur 
+        int transactions = 0; // Setting a placeholder for the number of transactions
 
-        int randomNumber2 = random.nextInt((2 - 1) + 1) + 1; // Randomly specifying if 1 or 2 transactions will occur 
+        if (randomNumber2 < 0.6) {transactions = 1;} else if (randomNumber2 < 0.9) {transactions = 2;} else {transactions = 3;}
 
-        for (int i = 0; i < randomNumber2; i++) {
-            int random_orig = random.nextInt((last_orig_index - 0) + 1) + 0;
-            int random_bene = random.nextInt(((members.size()-1)-(last_orig_index+1)) + 1) + last_orig_index + 1;
-
+        for (int i = 0; i < transactions; i++) {
+            int random_orig = random.nextInt(last_orig_index - 1); // Generating a random index from the orig node pool
+            int random_bene = random.nextInt(members.size()- last_orig_index - 1) + last_orig_index; // Randomly choosing a node from the bene pool
+            
+            // Accessing the nodes
             Account orig = members.get(random_orig);
             Account bene = members.get(random_bene);
 
-            TargetedTransactionAmount transactionAmount = getTransactionAmount(1, orig.getBalance());
+            TargetedTransactionAmount transactionAmount = getTransactionAmount(1, orig.getBalance()); // Calculating the transaction amount
 
-            makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID);
+            makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID); // Completing the transaction
 
-        }
-
-        // for (int i = 0; i < last_orig_index; i++) {
-        //     Account orig = members.get(i);
-        //     if (!orig.getID().equals(acct.getID())) {
-        //         continue;
-        //     }
-
-        //     TargetedTransactionAmount transactionAmount = getTransactionAmount(members.size() - last_orig_index,
-        //             orig.getBalance());
-
-        //     for (int j = last_orig_index; j < members.size(); j++) {
-        //         Account bene = members.get(j); // The latter half accounts are beneficiaries
-        //         makeTransaction(step, transactionAmount.doubleValue(), orig, bene, isSAR, alertID);
-        //     }}
-        } else {}
+        }} else {}
     }
 
 
