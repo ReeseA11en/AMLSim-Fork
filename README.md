@@ -75,6 +75,12 @@ cd /path/to/AMLSim
 python3 scripts/transaction_graph_generator.py conf.json
 ```
 
+If an error with the NetworkX library occurs, update the NetworkX library with the following command:
+
+```python
+pip install --upgrade git+https://github.com/networkx/networkx
+```
+
 ## 2. Build and launch the transaction simulator (Java)
 Parameters for the simulator are defined at the "general" section of `conf.json`. 
 
